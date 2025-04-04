@@ -10,6 +10,7 @@ const methodOverride = require("method-override");
 const path = require("path");
 const ExpressError = require("./utils/ExpressError.js");
 const session = require("express-session");
+const MongoStore = require("connect-mongo");
 const flash = require("connect-flash");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
@@ -44,12 +45,21 @@ async function main() {
   await mongoose.connect(atlasDb_URL);
 }
 
+const store = MongoStore.create({
+  mongoUrl: atlasDb_URL,
+  crypto: {
+    secret: process.env.SECRET,
+  },
+  touchAfter: 24 * 3600, // 24hrs
+});
+
 const webSession = session({
-  secret: "my secret code",
+  store,
+  secret: process.env.SECRET,
   resave: false,
   saveUninitialized: true,
   cookie: {
-    maxAge: 1 * 60 * 60 * 1000, //1hr
+    maxAge: 7 * 60 * 60 * 1000, // 7 days
     httpOnly: true,
   },
 });
