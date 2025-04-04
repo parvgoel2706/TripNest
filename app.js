@@ -34,7 +34,7 @@ app.use(express.static(path.join(__dirname, "/public/css")));
 app.use(express.static(path.join(__dirname, "/public/js")));
 
 // connecting with mongodb
-let atlasDb_URL = `mongodb+srv://${process.env.ATLASDB_USER}:${process.env.ATLASDB_PASSWORD}@cluster0.5ftfw.mongodb.net/smartkhata?retryWrites=true&w=majority&appName=Cluster0`;
+let atlasDb_URL = `mongodb+srv://${process.env.ATLASDB_USER}:${process.env.ATLASDB_PASSWORD}@cluster0.5ftfw.mongodb.net/tripnest?retryWrites=true&w=majority&appName=Cluster0`;
 // const local_mongo_URL = "mongodb://127.0.0.1:27017/wanderlust";
 main()
   .then(() => console.log("Successfully connected to database"))
