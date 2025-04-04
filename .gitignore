@@ -1,2 +1,4 @@
+classroom/
+init/
 /node_modules
 .env
