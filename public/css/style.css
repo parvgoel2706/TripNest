@@ -12,11 +12,49 @@ body {
 .navbar {
   height: 5rem;
 }
-.fa-compass {
-  color: #fe424d;
-  font-size: 2rem;
+.brand-identity {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  transition: transform 0.2s ease;
+}
+.logo-container {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.logo-mark {
+  position: relative;
+  width: 44px;
+  height: 44px;
+}
+.logo-mark svg {
+  width: 130%;
+  height: 130%;
+  filter: drop-shadow(0 2px 6px rgba(239, 68, 68, 0.2));
+}
+.brand-name {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1F2937;
+  letter-spacing: -0.5px;
+  position: relative;
+}
+.brand-name .trip {
+  color: #EF4444;
 }
 
+.brand-name .nest {
+  color: #3B82F6;
+}
+.navbar-nav {
+  align-items: center;
+  gap: 6px;
+}
 .nav-link {
   color: #222222;
 }

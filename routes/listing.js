@@ -22,7 +22,7 @@ router
   .route("/new")
   .get(isLoggedIn, listingController.renderNewForm)
   .post(
-    isLoggedIn,       // to check login if post request from hoppscotch
+    isLoggedIn, 
     upload.single("listing[image][url]"),
     validateListing,
     wrapAsync(listingController.createListing)

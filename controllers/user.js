@@ -58,12 +58,11 @@ module.exports.renderResetPassForm = (req, res) => {
   res.render("./user/requestPassword.ejs");
 };
 
-
-
 module.exports.sendResetLink = async (req, res) => {
   let user = req.user;
   const templatePath = path.join(__dirname, "emailTemplate.ejs");
   const htmlContent = await ejs.renderFile(templatePath, {
+    baseUrl: process.env.NODE_ENV === "production"? "https://tripnest-xgcz.onrender.com": "http://localhost:8080",
     email: user.email,
     time: Date.now(),
   });
@@ -83,18 +82,18 @@ module.exports.sendResetLink = async (req, res) => {
 
 module.exports.renderNewPassForm = (req, res) => {
   let { email, time } = req.params;
-  res.render("./user/newPassword.ejs",{email,time});
+  res.render("./user/newPassword.ejs", { email, time });
 };
 
 module.exports.updatePassword = async (req, res) => {
-  const { email } = req.params;
+  const { email, time } = req.params;
   const { newPswd, reNewPswd } = req.body;
   if (newPswd !== reNewPswd) {
     req.flash(
       "error",
       "Oops! Password confirmation doesn't match the password."
     );
-    res.render("./user/newPassword.ejs");
+    return res.redirect(`/password_reset/${email}/${time}`);
   }
   let user = await User.findOne({ email });
   await user.setPassword(newPswd);

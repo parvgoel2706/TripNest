@@ -13,7 +13,7 @@ const session = require("express-session");
 const MongoStore = require("connect-mongo");
 const flash = require("connect-flash");
 const passport = require("passport");
-const LocalStrategy = require("passport-local");
+const LocalStrategy = require("passport-local").Strategy;
 const User = require("./models/user.js");
 const listingRouter = require("./routes/listing.js");
 const reviewRouter = require("./routes/review.js");
@@ -70,7 +70,40 @@ app.use(flash());
 
 app.use(passport.initialize());
 app.use(passport.session());
-passport.use(new LocalStrategy(User.authenticate()));
+
+passport.use(
+  new LocalStrategy(
+    { usernameField: "username" },
+    async (username, password, done) => {
+      try {
+        const isEmail = username.includes("@");
+
+        let user;
+        if (isEmail) {
+          user = await User.findOne({ email: username });
+        } else {
+          user = await User.findByUsername(username); 
+        }
+
+        if (!user) {
+          return done(null, false, { message: "User not found" });
+        }
+
+        const isValid = await user.authenticate(password);
+
+        if (!isValid.user) {
+          return done(null, false, { message: "Incorrect password" });
+        }
+
+        return done(null, user);
+
+      } catch (err) {
+        return done(err);
+      }
+    }
+  )
+);
+
 
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
