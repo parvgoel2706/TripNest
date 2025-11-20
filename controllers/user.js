@@ -1,4 +1,5 @@
 const User = require("../models/user");
+const axios = require("axios");
 // const { auth, receiver } = require("../utils/resetPassLink");
 const { Resend } = require("resend");
 const ExpressError = require("../utils/ExpressError");
@@ -66,46 +67,65 @@ module.exports.renderResetPassForm = (req, res) => {
 };
 
 module.exports.sendResetLink = async (req, res) => {
-  let user = req.user;
-  const resend = new Resend(process.env.RESEND_API_KEY);
-  const templatePath = path.join(__dirname, "emailTemplate.ejs");
-  const htmlContent = await ejs.renderFile(templatePath, {
-    baseUrl:
-      process.env.NODE_ENV === "production"
-        ? "https://tripnest-xgcz.onrender.com"
-        : "http://localhost:8080",
-    email: user.email,
-    time: Date.now(),
-  });
-  // receiver.html = htmlContent;
-  // receiver.to = user.email;
+  try {
+    const user = req.user;
 
-  // auth.sendMail(receiver, (error, emailResponse) => {
-  //   if (error) throw Error(error);
-  //   console.log("sent");
-  //   req.flash(
-  //     "success",
-  //     `A reset password link has been sent to ${user.email}`
-  //   );
-  //   res.redirect("/login");
-  // });
+    const templatePath = path.join(__dirname, "emailTemplate.ejs");
 
-  await resend.emails.send({
-    from: "TripNest Support <onboarding@resend.dev>",
-    to: user.email,
-    subject: "Reset Your Password",
-    html: htmlContent,
-  });
+    const htmlContent = await ejs.renderFile(templatePath, {
+      baseUrl:
+        process.env.NODE_ENV === "production"
+          ? "https://tripnest-xgcz.onrender.com"
+          : "http://localhost:8080",
+      email: user.email.toLowerCase(),
+      time: Date.now(),
+    });
 
-  console.log("sent");
-  req.flash("success", `A reset password link has been sent to ${user.email}`);
-  res.redirect("/login");
+    // receiver.html = htmlContent;
+    // receiver.to = user.email;
+    // auth.sendMail(receiver, (error, emailResponse) => {
+    // if (error) throw Error(error);
+    // console.log("sent");
+    // req.flash("success",A reset password link has been sent to ${user.email} );
+    // res.redirect("/login");
+    // });
+    await axios.post(
+      "https://api.brevo.com/v3/smtp/email",
+      {
+        sender: {
+          email: "tripnest.passwrd.recovery@gmail.com",
+          name: "TripNest Support",
+        },
+        to: [{ email: user.email.toLowerCase() }],
+        subject: "Reset Your Password",
+        htmlContent: htmlContent,
+      },
+      {
+        headers: {
+          "api-key": process.env.BREVO_API_KEY,
+          "content-type": "application/json",
+        },
+      }
+    );
+
+    console.log("Email sent");
+
+    req.flash(
+      "success",
+      `A reset password link has been sent to ${user.email}`
+    );
+    res.redirect("/login");
+  } catch (err) {
+    console.error("Email error:", err.response?.data || err.message);
+    req.flash("error", "Something went wrong while sending email");
+    res.redirect("/forgot-password");
+  }
 };
 
 module.exports.renderNewPassForm = (req, res) => {
   let { email, time } = req.params;
   const lowerEmail = email.toLowerCase();
-  res.render("./user/newPassword.ejs", { email:lowerEmail, time });
+  res.render("./user/newPassword.ejs", { email: lowerEmail, time });
 };
 
 module.exports.updatePassword = async (req, res) => {
