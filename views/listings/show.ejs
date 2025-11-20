@@ -1,7 +1,7 @@
 <%layout("./layouts/boilerplate")%>
 
 <body>
-  <div class="container row">
+  <div class="container row mt-5">
     <div class="col-lg-6 offset-lg-2 col-md-8 offset-md-1">
       <h3><%=data.title%></h3>
       <img
@@ -18,7 +18,7 @@
           <li><%=data.country%></li>
         </ul>
       </div>
-      <%if(user && data.owner.username === user.username){%>
+      <%if(user && data.owner?.username === user.username){%>
       <div class="row mt-3">
         <div class="col-4">
           <form action="/listings/<%=data._id%>/edit" method="get">
@@ -45,7 +45,8 @@
     >
       <div class="rating mt-3">
         <input type="text" id="rating-value" style="display: none"
-        name="review[rating]" <%=user?"required":""%> value="<%=typeof userRating !== "undefined" ? userRating : ""%>"/>
+        name="review[rating]" <%=user?"required":""%> value="<%=typeof
+        userRating !== "undefined" ? userRating : ""%>"/>
         <div class="rating-star">
           <label for="rating" class="form-label">Rating :- </label>
           <i class="fa-solid fa-star star" id="1"></i>
