@@ -66,7 +66,7 @@ if (toggler) {
 
 let halfStars = document.querySelectorAll(".fa-star-half");
 let averageStar = document.querySelector(".average-star");
-let averageValue = averageStar.dataset.averageRating * 2 ||0;
+let averageValue = (averageStar?.dataset?.averageRating ?? 0) * 2;
 for (let i = 0; i < averageValue; i++) {
   halfStars[i].classList.add("checked");
 }
