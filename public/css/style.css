@@ -11,6 +11,7 @@ body {
 }
 .navbar {
   height: 5rem;
+  background-color: #ddddbf;
 }
 .brand-identity {
   display: flex;
@@ -92,7 +93,7 @@ body {
   flex-direction: column;
   justify-content: space-around;
   align-items: center;
-  background-color: #ebebeb;
+  background-color: #ddddbf;
 }
 
 .f-info-social i {

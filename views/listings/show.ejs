@@ -11,7 +11,7 @@
       />
       <div class="card-body">
         <ul>
-          <li>Owned by:- <i> <%=data.owner.username%> </i></li>
+          <li>Owned by:- <i> <%=data.owner?.username%> </i></li>
           <li><%=data.description%></li>
           <li>&#8377; <%=data.price.toLocaleString()%>/night</li>
           <li><%=data.location%></li>
