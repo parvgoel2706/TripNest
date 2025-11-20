@@ -1,5 +1,6 @@
 const User = require("../models/user");
-const { auth, receiver } = require("../utils/resetPassLink");
+// const { auth, receiver } = require("../utils/resetPassLink");
+const { Resend } = require("resend");
 const ExpressError = require("../utils/ExpressError");
 const ejs = require("ejs");
 const path = require("path");
@@ -60,24 +61,39 @@ module.exports.renderResetPassForm = (req, res) => {
 
 module.exports.sendResetLink = async (req, res) => {
   let user = req.user;
+  const resend = new Resend(process.env.RESEND_API_KEY);
   const templatePath = path.join(__dirname, "emailTemplate.ejs");
   const htmlContent = await ejs.renderFile(templatePath, {
-    baseUrl: process.env.NODE_ENV === "production"? "https://tripnest-xgcz.onrender.com": "http://localhost:8080",
+    baseUrl:
+      process.env.NODE_ENV === "production"
+        ? "https://tripnest-xgcz.onrender.com"
+        : "http://localhost:8080",
     email: user.email,
     time: Date.now(),
   });
-  receiver.html = htmlContent;
-  receiver.to = user.email;
+  // receiver.html = htmlContent;
+  // receiver.to = user.email;
 
-  auth.sendMail(receiver, (error, emailResponse) => {
-    if (error) throw Error(error);
-    console.log("sent");
-    req.flash(
-      "success",
-      `A reset password link has been sent to ${user.email}`
-    );
-    res.redirect("/login");
+  // auth.sendMail(receiver, (error, emailResponse) => {
+  //   if (error) throw Error(error);
+  //   console.log("sent");
+  //   req.flash(
+  //     "success",
+  //     `A reset password link has been sent to ${user.email}`
+  //   );
+  //   res.redirect("/login");
+  // });
+
+  await resend.emails.send({
+    from: "TripNest Support <onboarding@resend.dev>",
+    to: user.email,
+    subject: "Reset Your Password",
+    html: htmlContent,
   });
+
+  console.log("sent");
+  req.flash("success", `A reset password link has been sent to ${user.email}`);
+  res.redirect("/login");
 };
 
 module.exports.renderNewPassForm = (req, res) => {
