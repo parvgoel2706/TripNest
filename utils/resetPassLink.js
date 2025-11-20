@@ -5,13 +5,13 @@ module.exports.auth = nodemailer.createTransport({
   secure: true,
   port: 465,
   auth: {
-    user: "wanderlust.passwrd.recovery@gmail.com",
-    pass: "tzbyyhslqgvhlkex",
+    user:process.env.NODEMAILER_EMAIL,
+    pass:process.env.NODEMAILER_PASSWORD,
   },
 });
 
 module.exports.receiver = {
-  from: "wanderlust.passwrd.recovery@gmail.com",
+  from: process.env.NODEMAILER_EMAIL,
   to: "",
   subject: "Password reset link",
 };
