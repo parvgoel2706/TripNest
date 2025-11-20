@@ -94,6 +94,7 @@ function validateEmail(email) {
 
 module.exports.isRegistered = async (req, res, next) => {
   let { username: data } = req.body;
+  data = data.toLowerCase();
   let user;
   if (!validateEmail(data)) {
     user = await User.findOne({ username: data });

@@ -12,6 +12,12 @@ module.exports.renderSignupForm = (req, res) => {
 module.exports.signup = async (req, res) => {
   try {
     let user = req.body;
+    if (user.email) {
+      user.email = user.email.toLowerCase();
+    }
+    if (user.username) {
+      user.username = user.username.toLowerCase();
+    }
     let email = user.email;
     const existingEmail = await User.findOne({ email });
     if (existingEmail) {
@@ -98,20 +104,22 @@ module.exports.sendResetLink = async (req, res) => {
 
 module.exports.renderNewPassForm = (req, res) => {
   let { email, time } = req.params;
-  res.render("./user/newPassword.ejs", { email, time });
+  const lowerEmail = email.toLowerCase();
+  res.render("./user/newPassword.ejs", { email:lowerEmail, time });
 };
 
 module.exports.updatePassword = async (req, res) => {
   const { email, time } = req.params;
   const { newPswd, reNewPswd } = req.body;
+  const lowerEmail = email.toLowerCase();
   if (newPswd !== reNewPswd) {
     req.flash(
       "error",
       "Oops! Password confirmation doesn't match the password."
     );
-    return res.redirect(`/password_reset/${email}/${time}`);
+    return res.redirect(`/password_reset/${lowerEmail}/${time}`);
   }
-  let user = await User.findOne({ email });
+  let user = await User.findOne({ email: lowerEmail });
   await user.setPassword(newPswd);
   await user.save();
   console.log("saved");

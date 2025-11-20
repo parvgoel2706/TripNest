@@ -76,6 +76,7 @@ passport.use(
     { usernameField: "username" },
     async (username, password, done) => {
       try {
+        username = username.toLowerCase();
         const isEmail = username.includes("@");
 
         let user;
@@ -91,7 +92,7 @@ passport.use(
 
         const isValid = await user.authenticate(password);
 
-        if (!isValid.user) {
+        if (!isValid) {
           return done(null, false, { message: "Incorrect password" });
         }
 
