@@ -45,7 +45,7 @@
     >
       <div class="rating mt-3">
         <input type="text" id="rating-value" style="display: none"
-        name="review[rating]" <%=user?"required":""%> value="<%=userRating%>"/>
+        name="review[rating]" <%=user?"required":""%> value="<%=typeof userRating !== "undefined" ? userRating : ""%>"/>
         <div class="rating-star">
           <label for="rating" class="form-label">Rating :- </label>
           <i class="fa-solid fa-star star" id="1"></i>
@@ -65,7 +65,7 @@
           class="form-control"
           required
         >
- <%=userComment%></textarea
+<%=typeof userComment !== "undefined" ? userComment : ""%></textarea
         >
         <div class="invalid-feedback">Please share your experience.</div>
         <div class="valid-feedback">Thanks for your valuable feedback.</div>
